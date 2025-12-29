@@ -1,0 +1,131 @@
+{
+  "_comment": "Production QA Watcher Configuration - Copy to .qawatch.json and customize",
+
+  "// WATCH PATHS": "Directories to monitor for file changes",
+  "watchPaths": [
+    "./src",
+    "./components",
+    "./pages",
+    "./app",
+    "./lib",
+    "./utils"
+  ],
+
+  "// IGNORED PATTERNS": "Glob patterns for files/directories to ignore",
+  "ignored": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/.next/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.test.js",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.spec.js",
+    "**/qa-reviews/**",
+    "**/*.log",
+    "**/*.md"
+  ],
+
+  "// FILE EXTENSIONS": "File types to include in reviews",
+  "extensions": [".ts", ".tsx", ".js", ".jsx", ".mjs"],
+
+  "// DEBOUNCE DELAY": "Milliseconds to wait after file change before review (default: 1000)",
+  "debounceDelay": 1000,
+
+  "// AUTO-FIX SETTINGS": "Configuration for automatic code fixes",
+  "autoFix": {
+    "// backupFiles": "Create backup before modifying files (default: true)",
+    "backupFiles": true,
+
+    "// verifyAfterFix": "Re-run detection after fix to verify success (default: true)",
+    "verifyAfterFix": true,
+
+    "// safePatterns": "Issue types that are safe to auto-fix",
+    "safePatterns": [
+      "hardcoded-localhost",
+      "console-log",
+      "debugger-statement"
+    ]
+  },
+
+  "// RALPH MODE": "Autonomous loop mode settings",
+  "ralph": {
+    "// maxCycles": "Maximum fix cycles before stopping (default: 10)",
+    "maxCycles": 10,
+
+    "// budgetWarning": "Cost threshold for warning message in USD (default: 5.00)",
+    "budgetWarning": 5.00,
+
+    "// budgetHard": "Cost threshold to hard-stop Ralph mode in USD (default: 20.00)",
+    "budgetHard": 20.00
+  },
+
+  "// NOTIFICATIONS": "Desktop notification settings",
+  "notifications": {
+    "// enabled": "Enable desktop notifications (default: true)",
+    "enabled": true,
+
+    "// criticalOnly": "Only notify for critical issues (default: false)",
+    "criticalOnly": false,
+
+    "// sound": "Play sound with notifications (default: true)",
+    "sound": true,
+
+    "// throttle": "Minimum milliseconds between notifications (default: 60000)",
+    "throttle": 60000
+  },
+
+  "// DASHBOARD": "Real-time web dashboard for Ralph mode",
+  "dashboard": {
+    "// port": "Port for dashboard server (default: 3000)",
+    "port": 3000,
+
+    "// autoOpen": "Automatically open dashboard in browser (default: true)",
+    "autoOpen": true
+  },
+
+  "// TECH STACK": "Your project's technology stack (helps tailor reviews)",
+  "techStack": {
+    "// framework": "e.g., nextjs, react, vue, angular, express",
+    "framework": "",
+
+    "// database": "e.g., postgres, mysql, mongodb, supabase",
+    "database": "",
+
+    "// auth": "e.g., clerk, nextauth, auth0, firebase",
+    "auth": "",
+
+    "// hosting": "e.g., vercel, render, aws, railway",
+    "hosting": "",
+
+    "// orm": "e.g., prisma, drizzle, typeorm, mongoose",
+    "orm": "",
+
+    "// ui": "e.g., shadcn, tailwind, mui, chakra",
+    "ui": "",
+
+    "// testing": "e.g., vitest, jest, playwright, cypress",
+    "testing": ""
+  },
+
+  "// ADVANCED": "Advanced configuration (usually not needed)",
+  "claudeConfig": {
+    "detection": {
+      "// allowedTools": "Claude tools for detection phase",
+      "allowedTools": "Read,Grep",
+
+      "// maxTurns": "Maximum turns for detection (default: 10)",
+      "maxTurns": 10
+    },
+    "fixing": {
+      "// allowedTools": "Claude tools for fixing phase",
+      "allowedTools": "Read,Grep,Edit",
+
+      "// maxTurns": "Maximum turns for fixing (default: 5)",
+      "maxTurns": 5
+    }
+  }
+}

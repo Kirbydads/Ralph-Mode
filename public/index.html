@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ralph Mode Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================================================
+       CSS VARIABLES - shadcn/ui inspired color system
+       ========================================================================= */
+    :root {
+      /* Base colors */
+      --background: hsl(222, 47%, 6%);
+      --foreground: hsl(210, 40%, 96%);
+      --card: hsl(222, 47%, 9%);
+      --card-foreground: hsl(210, 40%, 96%);
+      --card-hover: hsl(222, 47%, 11%);
+
+      /* Muted */
+      --muted: hsl(217, 33%, 17%);
+      --muted-foreground: hsl(215, 20%, 65%);
+      --border: hsl(217, 33%, 20%);
+      --border-hover: hsl(217, 33%, 30%);
+
+      /* Accent colors */
+      --primary: hsl(217, 91%, 60%);
+      --primary-foreground: hsl(0, 0%, 100%);
+      --success: hsl(142, 71%, 45%);
+      --success-muted: hsl(142, 71%, 45%, 0.15);
+      --warning: hsl(38, 92%, 50%);
+      --warning-muted: hsl(38, 92%, 50%, 0.15);
+      --destructive: hsl(0, 84%, 60%);
+      --destructive-muted: hsl(0, 84%, 60%, 0.15);
+      --purple: hsl(270, 76%, 60%);
+      --purple-muted: hsl(270, 76%, 60%, 0.15);
+
+      /* Severity colors */
+      --critical: hsl(0, 84%, 60%);
+      --critical-bg: hsl(0, 84%, 60%, 0.15);
+      --high: hsl(25, 95%, 53%);
+      --high-bg: hsl(25, 95%, 53%, 0.15);
+      --medium: hsl(45, 93%, 47%);
+      --medium-bg: hsl(45, 93%, 47%, 0.15);
+      --low: hsl(142, 71%, 45%);
+      --low-bg: hsl(142, 71%, 45%, 0.15);
+
+      /* Spacing scale */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+
+      /* Border radius */
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-glow-purple: 0 0 20px 4px hsl(270, 76%, 60%, 0.25);
+      --shadow-glow-success: 0 0 20px 4px hsl(142, 71%, 45%, 0.25);
+
+      /* Transitions */
+      --transition-fast: 150ms ease;
+      --transition-base: 200ms ease;
+      --transition-slow: 300ms ease;
+      --transition-smooth: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* =========================================================================
+       RESET & BASE
+       ========================================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background);
+      color: var(--foreground);
+      min-height: 100vh;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* =========================================================================
+       ANIMATIONS
+       ========================================================================= */
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fixingGlow {
+      0%, 100% {
+        box-shadow: 0 0 0 0 hsl(270, 76%, 60%, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 16px 4px hsl(270, 76%, 60%, 0.2);
+      }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes checkPop {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @keyframes progressPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* =========================================================================
+       HEADER
+       ========================================================================= */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: hsl(222, 47%, 9%, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: var(--space-4) var(--space-6);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .logo-icon {
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+
+    .logo-text {
+      font-size: 1.125rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+
+    .logo-badge {
+      background: var(--purple-muted);
+      color: var(--purple);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Stats Pills */
+    .stats-pills {
+      display: flex;
+      gap: var(--space-3);
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: var(--muted);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-full);
+      font-size: 0.8125rem;
+      transition: background var(--transition-fast);
+    }
+
+    .stat-pill:hover {
+      background: var(--border);
+    }
+
+    .stat-icon {
+      font-size: 0.875rem;
+      opacity: 0.7;
+    }
+
+    .stat-label {
+      color: var(--muted-foreground);
+      font-weight: 500;
+    }
+
+    .stat-value {
+      color: var(--foreground);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .stat-value.cost {
+      color: var(--success);
+    }
+
+    /* Connection Status */
+    .connection-status {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 0.8125rem;
+      color: var(--muted-foreground);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--destructive);
+      animation: pulse 2s infinite;
+      transition: background var(--transition-base);
+    }
+
+    .status-dot.connected {
+      background: var(--success);
+      animation: none;
+    }
+
+    /* =========================================================================
+       PROGRESS CARDS SECTION
+       ========================================================================= */
+    .progress-section {
+      padding: var(--space-6);
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .progress-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-5);
+    }
+
+    @media (max-width: 900px) {
+      .progress-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .progress-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      transition: all var(--transition-base);
+    }
+
+    .progress-card:hover {
+      border-color: var(--border-hover);
+      background: var(--card-hover);
+    }
+
+    .progress-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-4);
+    }
+
+    .progress-card-label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 0.8125rem;
+      color: var(--muted-foreground);
+      font-weight: 500;
+    }
+
+    .progress-card-label-icon {
+      font-size: 1rem;
+    }
+
+    .progress-card-value {
+      font-size: 1.875rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      font-family: 'JetBrains Mono', 'Inter', sans-serif;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .progress-card-subtext {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      margin-top: var(--space-1);
+    }
+
+    .progress-bar-container {
+      height: 8px;
+      background: var(--muted);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width var(--transition-smooth);
+      position: relative;
+    }
+
+    .progress-bar-fill.issues {
+      background: linear-gradient(90deg, var(--primary), var(--success));
+    }
+
+    .progress-bar-fill.budget {
+      background: linear-gradient(90deg, var(--success), var(--warning), var(--destructive));
+    }
+
+    .progress-bar-fill.cycle {
+      background: var(--purple);
+    }
+
+    .progress-bar-fill.shimmer::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255,255,255,0.2) 50%,
+        transparent 100%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 2s infinite;
+    }
+
+    /* =========================================================================
+       KANBAN COLUMNS
+       ========================================================================= */
+    .kanban-section {
+      padding: 0 var(--space-6) var(--space-6);
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .kanban-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-5);
+      align-items: start;
+    }
+
+    @media (max-width: 1200px) {
+      .kanban-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .kanban-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kanban-column {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 380px);
+      min-height: 400px;
+    }
+
+    .column-header {
+      position: sticky;
+      top: 0;
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      z-index: 10;
+    }
+
+    .column-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .column-indicator {
+      width: 4px;
+      height: 24px;
+      border-radius: 2px;
+    }
+
+    .column-indicator.detected { background: var(--high); }
+    .column-indicator.fixing { background: var(--purple); }
+    .column-indicator.completed { background: var(--success); }
+
+    .column-title {
+      font-weight: 600;
+      font-size: 0.9375rem;
+    }
+
+    .column-count {
+      background: var(--muted);
+      color: var(--muted-foreground);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: var(--radius-full);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .column-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-4);
+      scroll-behavior: smooth;
+    }
+
+    /* Custom Scrollbar */
+    .column-content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .column-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .column-content::-webkit-scrollbar-thumb {
+      background: var(--muted);
+      border-radius: 3px;
+    }
+
+    .column-content::-webkit-scrollbar-thumb:hover {
+      background: var(--border);
+    }
+
+    /* =========================================================================
+       ISSUE CARDS
+       ========================================================================= */
+    .issue-card {
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-3);
+      transition: all var(--transition-base);
+      animation: slideUp 0.3s ease backwards;
+    }
+
+    .issue-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .issue-card.fixing {
+      border-color: var(--purple);
+      animation: fixingGlow 2s infinite, slideUp 0.3s ease backwards;
+    }
+
+    .issue-card.completed {
+      opacity: 0.7;
+    }
+
+    .issue-card.completed:hover {
+      opacity: 1;
+    }
+
+    .issue-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-3);
+      margin-bottom: var(--space-2);
+    }
+
+    .issue-file {
+      font-size: 0.8125rem;
+      color: var(--primary);
+      font-family: 'JetBrains Mono', monospace;
+      word-break: break-all;
+      line-height: 1.4;
+    }
+
+    .issue-line {
+      color: var(--muted-foreground);
+    }
+
+    .severity-badge {
+      flex-shrink: 0;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .severity-badge.critical {
+      background: var(--critical-bg);
+      color: var(--critical);
+    }
+
+    .severity-badge.high {
+      background: var(--high-bg);
+      color: var(--high);
+    }
+
+    .severity-badge.medium {
+      background: var(--medium-bg);
+      color: var(--medium);
+    }
+
+    .severity-badge.low {
+      background: var(--low-bg);
+      color: var(--low);
+    }
+
+    .issue-type {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      margin-bottom: var(--space-1);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .issue-type-tag {
+      background: var(--muted);
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .issue-message {
+      font-size: 0.8125rem;
+      color: var(--foreground);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Fixing Progress */
+    .issue-progress {
+      margin-top: var(--space-3);
+      height: 4px;
+      background: var(--muted);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .issue-progress-fill {
+      height: 100%;
+      background: var(--purple);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+      animation: progressPulse 1.5s infinite;
+    }
+
+    .issue-fixing-status {
+      margin-top: var(--space-3);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 0.75rem;
+      color: var(--purple);
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--purple-muted);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* Completed Card Status */
+    .issue-status {
+      margin-top: var(--space-3);
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .issue-status.success {
+      color: var(--success);
+    }
+
+    .issue-status.failed {
+      color: var(--destructive);
+    }
+
+    .check-icon {
+      animation: checkPop 0.4s ease;
+    }
+
+    /* Completed Card Summary */
+    .completed-summary {
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      text-align: center;
+      color: var(--muted-foreground);
+      font-size: 0.8125rem;
+    }
+
+    /* =========================================================================
+       EMPTY STATES
+       ========================================================================= */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8);
+      text-align: center;
+      color: var(--muted-foreground);
+      height: 100%;
+      min-height: 200px;
+    }
+
+    .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: var(--space-4);
+      opacity: 0.5;
+    }
+
+    .empty-text {
+      font-size: 0.875rem;
+    }
+
+    /* Skeleton Loading */
+    .skeleton-card {
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-3);
+    }
+
+    .skeleton-line {
+      height: 12px;
+      background: linear-gradient(
+        90deg,
+        var(--muted) 25%,
+        var(--border) 50%,
+        var(--muted) 75%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: var(--radius-sm);
+      margin-bottom: var(--space-2);
+    }
+
+    .skeleton-line:last-child {
+      margin-bottom: 0;
+    }
+
+    .skeleton-line.short {
+      width: 60%;
+    }
+
+    .skeleton-line.tiny {
+      width: 30%;
+    }
+
+    /* =========================================================================
+       ACTIVITY LOG
+       ========================================================================= */
+    .log-section {
+      padding: var(--space-6);
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .log-container {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+
+    .log-header:hover {
+      background: var(--card-hover);
+    }
+
+    .log-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .log-title {
+      font-weight: 600;
+      font-size: 0.9375rem;
+    }
+
+    .log-count {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .log-toggle {
+      color: var(--muted-foreground);
+      transition: transform var(--transition-base);
+    }
+
+    .log-toggle.collapsed {
+      transform: rotate(-90deg);
+    }
+
+    .log-clear {
+      font-size: 0.8125rem;
+      color: var(--primary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      transition: background var(--transition-fast);
+    }
+
+    .log-clear:hover {
+      background: var(--muted);
+    }
+
+    .log-content {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.8125rem;
+      max-height: 200px;
+      overflow-y: auto;
+      background: var(--background);
+      padding: var(--space-4);
+      transition: max-height var(--transition-slow);
+    }
+
+    .log-content.collapsed {
+      max-height: 0;
+      padding: 0 var(--space-4);
+      overflow: hidden;
+    }
+
+    .log-entry {
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-1) 0;
+      line-height: 1.5;
+    }
+
+    .log-time {
+      color: var(--muted-foreground);
+      flex-shrink: 0;
+    }
+
+    .log-message {
+      word-break: break-word;
+    }
+
+    .log-entry.info .log-message { color: var(--foreground); }
+    .log-entry.success .log-message { color: var(--success); }
+    .log-entry.warning .log-message { color: var(--warning); }
+    .log-entry.error .log-message { color: var(--destructive); }
+
+    /* =========================================================================
+       WAITING STATE
+       ========================================================================= */
+    .waiting-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      text-align: center;
+      padding: var(--space-8);
+    }
+
+    .waiting-icon {
+      font-size: 4rem;
+      margin-bottom: var(--space-6);
+      animation: bounce 2s infinite;
+    }
+
+    .waiting-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: var(--space-2);
+    }
+
+    .waiting-message {
+      color: var(--muted-foreground);
+      font-size: 0.9375rem;
+    }
+
+    /* =========================================================================
+       COMPLETION OVERLAY
+       ========================================================================= */
+    .completion-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: hsl(222, 47%, 6%, 0.95);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .completion-overlay.show {
+      display: flex;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .completion-content {
+      text-align: center;
+      animation: scaleIn 0.5s ease;
+    }
+
+    .completion-icon {
+      font-size: 5rem;
+      margin-bottom: var(--space-6);
+    }
+
+    .completion-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+      letter-spacing: -0.02em;
+    }
+
+    .completion-stats {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-8);
+      margin-bottom: var(--space-6);
+    }
+
+    .completion-stat {
+      text-align: center;
+    }
+
+    .completion-stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--success);
+    }
+
+    .completion-stat-label {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      margin-top: var(--space-1);
+    }
+
+    .completion-reason {
+      font-size: 1rem;
+      color: var(--muted-foreground);
+      margin-top: var(--space-4);
+    }
+
+    /* =========================================================================
+       RESPONSIVE ADJUSTMENTS
+       ========================================================================= */
+    @media (max-width: 1024px) {
+      .header-content {
+        flex-wrap: wrap;
+        gap: var(--space-4);
+      }
+
+      .stats-pills {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .stat-pill {
+        font-size: 0.75rem;
+        padding: var(--space-2) var(--space-3);
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: var(--space-3) var(--space-4);
+      }
+
+      .progress-section,
+      .kanban-section,
+      .log-section {
+        padding: var(--space-4);
+      }
+
+      .logo-text {
+        font-size: 1rem;
+      }
+
+      .logo-badge {
+        display: none;
+      }
+
+      .progress-card-value {
+        font-size: 1.5rem;
+      }
+
+      .completion-stats {
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">🤖</span>
+        <span class="logo-text">Ralph Mode</span>
+        <span class="logo-badge">Dashboard</span>
+      </div>
+
+      <div class="stats-pills">
+        <div class="stat-pill">
+          <span class="stat-icon">🔄</span>
+          <span class="stat-label">Cycle</span>
+          <span class="stat-value" id="cycle-display">0/0</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-icon">⏱️</span>
+          <span class="stat-label">Runtime</span>
+          <span class="stat-value" id="runtime-display">00:00</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-icon">💰</span>
+          <span class="stat-label">Cost</span>
+          <span class="stat-value cost" id="cost-display">$0.00</span>
+        </div>
+      </div>
+
+      <div class="connection-status">
+        <a href="/metrics" class="metrics-button" style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; text-decoration: none; font-size: 0.8125rem; font-weight: 500; padding: 6px 12px; border-radius: 6px; margin-right: var(--space-4); transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(59, 130, 246, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(59, 130, 246, 0.3)';">
+          <span style="font-size: 1rem;">📊</span> Metrics
+        </a>
+        <div class="status-dot" id="connection-dot"></div>
+        <span id="connection-text">Connecting...</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- PROGRESS CARDS -->
+  <section class="progress-section" id="progress-section">
+    <div class="progress-cards">
+      <div class="progress-card">
+        <div class="progress-card-header">
+          <div>
+            <div class="progress-card-label">
+              <span class="progress-card-label-icon">✅</span>
+              Issues Fixed
+            </div>
+            <div class="progress-card-value" id="issues-fixed-value">0</div>
+            <div class="progress-card-subtext" id="issues-fixed-subtext">of 0 total issues</div>
+          </div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill issues shimmer" id="issues-progress" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="progress-card">
+        <div class="progress-card-header">
+          <div>
+            <div class="progress-card-label">
+              <span class="progress-card-label-icon">🔄</span>
+              Current Cycle
+            </div>
+            <div class="progress-card-value" id="cycle-value">0 / 10</div>
+            <div class="progress-card-subtext" id="cycle-subtext">max cycles</div>
+          </div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill cycle shimmer" id="cycle-progress" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="progress-card">
+        <div class="progress-card-header">
+          <div>
+            <div class="progress-card-label">
+              <span class="progress-card-label-icon">💵</span>
+              Budget Used
+            </div>
+            <div class="progress-card-value" id="budget-value">$0.00</div>
+            <div class="progress-card-subtext" id="budget-subtext">of $20.00 limit</div>
+          </div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill budget" id="budget-progress" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KANBAN / WAITING STATE -->
+  <section class="kanban-section" id="main-content">
+    <div class="waiting-state" id="waiting-state">
+      <div class="waiting-icon">🤖</div>
+      <div class="waiting-title">Waiting for Ralph Mode...</div>
+      <div class="waiting-message">Start Ralph mode to see real-time progress</div>
+    </div>
+  </section>
+
+  <!-- ACTIVITY LOG -->
+  <section class="log-section" id="log-section" style="display: none;">
+    <div class="log-container">
+      <div class="log-header" onclick="toggleLog()">
+        <div class="log-header-left">
+          <span class="log-toggle" id="log-toggle">▼</span>
+          <span class="log-title">Activity Log</span>
+          <span class="log-count" id="log-count">0 entries</span>
+        </div>
+        <button class="log-clear" onclick="event.stopPropagation(); clearLog();">Clear</button>
+      </div>
+      <div class="log-content" id="log-content"></div>
+    </div>
+  </section>
+
+  <!-- COMPLETION OVERLAY -->
+  <div class="completion-overlay" id="completion-overlay">
+    <div class="completion-content">
+      <div class="completion-icon" id="completion-icon">🎉</div>
+      <div class="completion-title" id="completion-title">All Clear!</div>
+      <div class="completion-stats" id="completion-stats-container">
+        <div class="completion-stat">
+          <div class="completion-stat-value" id="completion-fixed">0</div>
+          <div class="completion-stat-label">Issues Fixed</div>
+        </div>
+        <div class="completion-stat">
+          <div class="completion-stat-value" id="completion-cycles">0</div>
+          <div class="completion-stat-label">Cycles</div>
+        </div>
+        <div class="completion-stat">
+          <div class="completion-stat-value" id="completion-cost">$0.00</div>
+          <div class="completion-stat-label">Total Cost</div>
+        </div>
+        <div class="completion-stat">
+          <div class="completion-stat-value" id="completion-time">00:00</div>
+          <div class="completion-stat-label">Duration</div>
+        </div>
+      </div>
+      <div class="completion-reason" id="completion-reason"></div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // STATE
+    // =========================================================================
+
+    const state = {
+      connected: false,
+      started: false,
+      cycle: 0,
+      maxCycles: 10,
+      startTime: null,
+      totalCost: 0,
+      budgetHard: 20,
+      totalFixed: 0,
+      totalIssues: 0,
+      issues: new Map(),
+      fixing: new Set(),
+      completed: new Set(),
+      logs: [],
+      logCollapsed: false
+    };
+
+    let ws = null;
+    let runtimeInterval = null;
+
+    // =========================================================================
+    // WEBSOCKET
+    // =========================================================================
+
+    function connect() {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${protocol}//${window.location.host}`);
+
+      ws.onopen = () => {
+        state.connected = true;
+        updateConnectionStatus();
+        addLog('Connected to Ralph Mode', 'success');
+      };
+
+      ws.onclose = () => {
+        state.connected = false;
+        updateConnectionStatus();
+        addLog('Disconnected from server', 'warning');
+        setTimeout(connect, 3000);
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        addLog('Connection error', 'error');
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const message = JSON.parse(event.data);
+          handleEvent(message.type, message.data, message.timestamp);
+        } catch (e) {
+          console.error('Failed to parse message:', e);
+        }
+      };
+    }
+
+    function handleEvent(type, data, timestamp) {
+      switch (type) {
+        case 'connected':
+          break;
+
+        case 'state_sync':
+          restoreState(data);
+          break;
+
+        case 'ralph_started':
+          state.started = true;
+          state.maxCycles = data.maxCycles || 10;
+          state.budgetHard = data.budgetHard || 20;
+          state.startTime = Date.now();
+          startRuntimeTimer();
+          showKanbanView();
+          updateAllDisplays();
+          addLog(`Ralph mode started (max ${state.maxCycles} cycles)`, 'info');
+          break;
+
+        case 'cycle_started':
+          state.cycle = data.cycle;
+          state.maxCycles = data.maxCycles;
+          updateAllDisplays();
+          addLog(`Cycle ${data.cycle}/${data.maxCycles} started`, 'info');
+          break;
+
+        case 'detection_started':
+          addLog(`Scanning ${data.fileCount} files...`, 'info');
+          break;
+
+        case 'detection_complete':
+          handleDetectionComplete(data);
+          break;
+
+        case 'fix_started':
+          handleFixStarted(data);
+          break;
+
+        case 'fix_progress':
+          updateFixProgress(data.file, data.progress);
+          break;
+
+        case 'fix_complete':
+          handleFixComplete(data);
+          break;
+
+        case 'verification_result':
+          handleVerificationResult(data);
+          break;
+
+        case 'cycle_complete':
+          state.totalFixed = data.totalFixed;
+          state.totalCost = data.cost;
+          updateAllDisplays();
+          addLog(`Cycle ${data.cycle} complete: ${data.fixedThisCycle} fixed`, 'success');
+          break;
+
+        case 'cost_update':
+          state.totalCost = data.totalCost;
+          updateAllDisplays();
+          break;
+
+        case 'budget_warning':
+          addLog(`Budget warning: $${data.currentCost.toFixed(2)} spent`, 'warning');
+          break;
+
+        case 'budget_exceeded':
+          addLog(`Budget limit reached: $${data.currentCost.toFixed(2)}`, 'error');
+          break;
+
+        case 'ralph_complete':
+          handleRalphComplete(data);
+          break;
+
+        case 'log_entry':
+          addLog(data.message, data.level);
+          break;
+
+        case 'server_shutdown':
+          addLog('Server shutting down', 'warning');
+          break;
+      }
+    }
+
+    // =========================================================================
+    // EVENT HANDLERS
+    // =========================================================================
+
+    function restoreState(data) {
+      // Restore full state from server sync
+      state.started = data.started;
+      state.cycle = data.cycle;
+      state.maxCycles = data.maxCycles;
+      state.budgetHard = data.budgetHard;
+      state.totalCost = data.totalCost;
+      state.startTime = data.startTime;
+
+      // Restore issues
+      state.issues.clear();
+      if (data.issues) {
+        data.issues.forEach(issue => {
+          state.issues.set(issue.id, issue);
+        });
+      }
+
+      // Restore fixing set
+      state.fixing.clear();
+      if (data.fixing) {
+        data.fixing.forEach(id => state.fixing.add(id));
+      }
+
+      // Restore completed set
+      state.completed.clear();
+      if (data.completed) {
+        data.completed.forEach(id => state.completed.add(id));
+      }
+
+      // Restore logs
+      state.logs = data.logs || [];
+
+      // Calculate totals
+      state.totalIssues = state.issues.size + state.completed.size;
+
+      // Start runtime timer if ralph is running
+      if (state.started && state.startTime) {
+        startRuntimeTimer();
+      }
+
+      // Show kanban view and update displays
+      if (state.started) {
+        showKanbanView();
+        updateAllDisplays();
+        renderColumns();
+        renderLog();
+        addLog('State synced from server', 'success');
+      }
+    }
+
+    function handleDetectionComplete(data) {
+      const issues = data.issues || [];
+      state.totalCost = (state.totalCost || 0) + (data.cost || 0);
+
+      state.issues.clear();
+      state.fixing.clear();
+
+      issues.forEach(issue => {
+        const id = issue.id || `${issue.file}:${issue.line}`;
+        if (!state.completed.has(id)) {
+          state.issues.set(id, {
+            ...issue,
+            id,
+            status: 'detected'
+          });
+        }
+      });
+
+      state.totalIssues = state.issues.size + state.completed.size;
+      updateAllDisplays();
+      renderColumns();
+      addLog(`Found ${issues.length} issues (${data.autoFixable} auto-fixable)`, 'info');
+    }
+
+    function handleFixStarted(data) {
+      const issueIds = data.issueIds || [];
+      issueIds.forEach(id => {
+        state.fixing.add(id);
+        const issue = state.issues.get(id);
+        if (issue) {
+          issue.status = 'fixing';
+          issue.progress = 0;
+        }
+      });
+      renderColumns();
+      addLog(`Fixing ${data.file} (${data.issueCount} issues)...`, 'info');
+    }
+
+    function updateFixProgress(file, progress) {
+      state.issues.forEach((issue, id) => {
+        if (issue.file === file && state.fixing.has(id)) {
+          issue.progress = progress;
+        }
+      });
+      renderColumns();
+    }
+
+    function handleFixComplete(data) {
+      const fixed = data.fixed || [];
+      const failed = data.failed || [];
+
+      fixed.forEach(id => {
+        state.fixing.delete(id);
+        state.completed.add(id);
+        state.issues.delete(id);
+      });
+
+      failed.forEach(id => {
+        state.fixing.delete(id);
+        const issue = state.issues.get(id);
+        if (issue) {
+          issue.status = 'failed';
+        }
+      });
+
+      updateAllDisplays();
+      renderColumns();
+
+      if (fixed.length > 0) {
+        addLog(`Fixed ${data.file}`, 'success');
+      } else {
+        addLog(`Fix failed for ${data.file}`, 'error');
+      }
+    }
+
+    function handleVerificationResult(data) {
+      if (!data.verified) {
+        addLog(`Verification failed for ${data.file}, restored backup`, 'warning');
+      }
+    }
+
+    function handleRalphComplete(data) {
+      stopRuntimeTimer();
+      state.totalFixed = data.totalFixed;
+      state.totalCost = data.totalCost;
+      updateAllDisplays();
+
+      const overlay = document.getElementById('completion-overlay');
+      const icon = document.getElementById('completion-icon');
+      const title = document.getElementById('completion-title');
+      const reason = document.getElementById('completion-reason');
+
+      if (data.status === 'complete') {
+        icon.textContent = '🎉';
+        title.textContent = 'All Clear!';
+      } else {
+        icon.textContent = '⚠️';
+        title.textContent = 'Ralph Stopped';
+      }
+
+      document.getElementById('completion-fixed').textContent = data.totalFixed;
+      document.getElementById('completion-cycles').textContent = state.cycle;
+      document.getElementById('completion-cost').textContent = `$${data.totalCost.toFixed(2)}`;
+      document.getElementById('completion-time').textContent = formatDuration(data.duration);
+      reason.textContent = data.reason || '';
+
+      overlay.classList.add('show');
+      addLog(`Ralph ${data.status}: ${data.reason}`, data.status === 'complete' ? 'success' : 'warning');
+    }
+
+    // =========================================================================
+    // UI UPDATES
+    // =========================================================================
+
+    function showKanbanView() {
+      const main = document.getElementById('main-content');
+      main.innerHTML = `
+        <div class="kanban-grid">
+          <div class="kanban-column">
+            <div class="column-header">
+              <div class="column-header-left">
+                <div class="column-indicator detected"></div>
+                <span class="column-title">Detected</span>
+              </div>
+              <span class="column-count" id="detected-count">0</span>
+            </div>
+            <div class="column-content" id="detected-column"></div>
+          </div>
+          <div class="kanban-column">
+            <div class="column-header">
+              <div class="column-header-left">
+                <div class="column-indicator fixing"></div>
+                <span class="column-title">Fixing</span>
+              </div>
+              <span class="column-count" id="fixing-count">0</span>
+            </div>
+            <div class="column-content" id="fixing-column"></div>
+          </div>
+          <div class="kanban-column">
+            <div class="column-header">
+              <div class="column-header-left">
+                <div class="column-indicator completed"></div>
+                <span class="column-title">Completed</span>
+              </div>
+              <span class="column-count" id="completed-count">0</span>
+            </div>
+            <div class="column-content" id="completed-column"></div>
+          </div>
+        </div>
+      `;
+      document.getElementById('log-section').style.display = 'block';
+      renderSkeletons();
+    }
+
+    function renderSkeletons() {
+      const detectedCol = document.getElementById('detected-column');
+      if (!detectedCol) return;
+
+      const skeleton = `
+        <div class="skeleton-card">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line tiny"></div>
+        </div>
+      `;
+
+      detectedCol.innerHTML = skeleton + skeleton;
+    }
+
+    function renderColumns() {
+      const detectedCol = document.getElementById('detected-column');
+      const fixingCol = document.getElementById('fixing-column');
+      const completedCol = document.getElementById('completed-column');
+
+      if (!detectedCol) return;
+
+      const detected = [];
+      const fixing = [];
+
+      state.issues.forEach((issue, id) => {
+        if (state.fixing.has(id)) {
+          fixing.push(issue);
+        } else {
+          detected.push(issue);
+        }
+      });
+
+      const severityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+      detected.sort((a, b) => (severityOrder[a.severity] || 3) - (severityOrder[b.severity] || 3));
+
+      detectedCol.innerHTML = detected.length
+        ? detected.map((issue, i) => renderIssueCard(issue, false, i)).join('')
+        : renderEmptyState('📭', 'No issues detected');
+
+      fixingCol.innerHTML = fixing.length
+        ? fixing.map((issue, i) => renderIssueCard(issue, true, i)).join('')
+        : renderEmptyState('🔧', 'No fixes in progress');
+
+      completedCol.innerHTML = state.completed.size
+        ? renderCompletedCards()
+        : renderEmptyState('✨', 'No fixes completed');
+
+      document.getElementById('detected-count').textContent = detected.length;
+      document.getElementById('fixing-count').textContent = fixing.length;
+      document.getElementById('completed-count').textContent = state.completed.size;
+    }
+
+    function renderIssueCard(issue, isFixing = false, index = 0) {
+      const delay = index * 50;
+
+      const fixingContent = isFixing ? `
+        <div class="issue-progress">
+          <div class="issue-progress-fill" style="width: ${issue.progress || 50}%"></div>
+        </div>
+        <div class="issue-fixing-status">
+          <div class="spinner"></div>
+          <span>Fixing...</span>
+        </div>
+      ` : '';
+
+      return `
+        <div class="issue-card ${isFixing ? 'fixing' : ''}" style="animation-delay: ${delay}ms">
+          <div class="issue-card-header">
+            <span class="issue-file">
+              ${escapeHtml(issue.file || 'unknown')}:<span class="issue-line">${issue.line || '?'}</span>
+            </span>
+            <span class="severity-badge ${issue.severity || 'medium'}">${issue.severity || 'medium'}</span>
+          </div>
+          <div class="issue-type">
+            <span class="issue-type-tag">${escapeHtml(issue.type || 'unknown')}</span>
+          </div>
+          <div class="issue-message">${escapeHtml(issue.message || '')}</div>
+          ${fixingContent}
+        </div>
+      `;
+    }
+
+    function renderCompletedCards() {
+      const cards = [];
+      let count = 0;
+      const maxShow = 15;
+
+      state.completed.forEach(id => {
+        if (count++ < maxShow) {
+          const [file, line] = id.split(':');
+          const fileName = file.split(/[/\\]/).pop();
+          cards.push(`
+            <div class="issue-card completed" style="animation-delay: ${count * 30}ms">
+              <div class="issue-card-header">
+                <span class="issue-file">
+                  ${escapeHtml(fileName)}:<span class="issue-line">${line}</span>
+                </span>
+              </div>
+              <div class="issue-status success">
+                <span class="check-icon">✓</span>
+                <span>Fixed</span>
+              </div>
+            </div>
+          `);
+        }
+      });
+
+      if (state.completed.size > maxShow) {
+        cards.push(`
+          <div class="completed-summary">
+            + ${state.completed.size - maxShow} more issues fixed
+          </div>
+        `);
+      }
+
+      return cards.join('');
+    }
+
+    function renderEmptyState(icon, message) {
+      return `
+        <div class="empty-state">
+          <div class="empty-icon">${icon}</div>
+          <div class="empty-text">${message}</div>
+        </div>
+      `;
+    }
+
+    function updateConnectionStatus() {
+      const dot = document.getElementById('connection-dot');
+      const text = document.getElementById('connection-text');
+      if (state.connected) {
+        dot.classList.add('connected');
+        text.textContent = 'Connected';
+      } else {
+        dot.classList.remove('connected');
+        text.textContent = 'Disconnected';
+      }
+    }
+
+    function updateAllDisplays() {
+      // Header stats
+      document.getElementById('cycle-display').textContent = `${state.cycle}/${state.maxCycles}`;
+      document.getElementById('cost-display').textContent = `$${state.totalCost.toFixed(2)}`;
+
+      // Progress cards
+      const total = state.totalIssues || 1;
+      const fixed = state.completed.size;
+      const issuePercent = Math.round((fixed / total) * 100);
+      const cyclePercent = Math.round((state.cycle / state.maxCycles) * 100);
+      const budgetPercent = Math.min(100, (state.totalCost / state.budgetHard) * 100);
+
+      document.getElementById('issues-fixed-value').textContent = fixed;
+      document.getElementById('issues-fixed-subtext').textContent = `of ${total} total issues`;
+      document.getElementById('issues-progress').style.width = `${issuePercent}%`;
+
+      document.getElementById('cycle-value').textContent = `${state.cycle} / ${state.maxCycles}`;
+      document.getElementById('cycle-progress').style.width = `${cyclePercent}%`;
+
+      document.getElementById('budget-value').textContent = `$${state.totalCost.toFixed(2)}`;
+      document.getElementById('budget-subtext').textContent = `of $${state.budgetHard.toFixed(2)} limit`;
+      document.getElementById('budget-progress').style.width = `${budgetPercent}%`;
+    }
+
+    function startRuntimeTimer() {
+      runtimeInterval = setInterval(() => {
+        if (state.startTime) {
+          const elapsed = Date.now() - state.startTime;
+          document.getElementById('runtime-display').textContent = formatDuration(elapsed);
+        }
+      }, 1000);
+    }
+
+    function stopRuntimeTimer() {
+      if (runtimeInterval) {
+        clearInterval(runtimeInterval);
+        runtimeInterval = null;
+      }
+    }
+
+    // =========================================================================
+    // LOG
+    // =========================================================================
+
+    function addLog(message, level = 'info') {
+      const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+      state.logs.push({ time, message, level });
+      if (state.logs.length > 100) state.logs.shift();
+      renderLog();
+    }
+
+    function renderLog() {
+      const content = document.getElementById('log-content');
+      const countEl = document.getElementById('log-count');
+      if (!content) return;
+
+      countEl.textContent = `${state.logs.length} entries`;
+
+      content.innerHTML = state.logs.map(log => `
+        <div class="log-entry ${log.level}">
+          <span class="log-time">[${log.time}]</span>
+          <span class="log-message">${escapeHtml(log.message)}</span>
+        </div>
+      `).join('');
+
+      content.scrollTop = content.scrollHeight;
+    }
+
+    function clearLog() {
+      state.logs = [];
+      renderLog();
+    }
+
+    function toggleLog() {
+      const content = document.getElementById('log-content');
+      const toggle = document.getElementById('log-toggle');
+      state.logCollapsed = !state.logCollapsed;
+
+      if (state.logCollapsed) {
+        content.classList.add('collapsed');
+        toggle.classList.add('collapsed');
+      } else {
+        content.classList.remove('collapsed');
+        toggle.classList.remove('collapsed');
+      }
+    }
+
+    // =========================================================================
+    // HELPERS
+    // =========================================================================
+
+    function formatDuration(ms) {
+      const seconds = Math.floor(ms / 1000);
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // =========================================================================
+    // INIT
+    // =========================================================================
+
+    connect();
+  </script>
+</body>
+</html>

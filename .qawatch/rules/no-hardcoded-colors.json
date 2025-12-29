@@ -1,0 +1,12 @@
+{
+  "name": "no-hardcoded-colors",
+  "enabled": true,
+  "pattern": "/#[0-9a-fA-F]{3,6}/",
+  "severity": "low",
+  "type": "quality",
+  "message": "Hardcoded hex color found - consider using CSS variables or theme tokens",
+  "fix": "Replace with theme color variable (e.g., var(--primary) or theme.colors.primary)",
+  "autoFixable": false,
+  "files": ["*.tsx", "*.jsx", "*.css", "*.scss"],
+  "ignoreFiles": ["*.config.*", "tailwind.config.*", "theme.ts", "colors.ts"]
+}

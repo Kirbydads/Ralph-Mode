@@ -1,0 +1,71 @@
+# .qaignore - QA Watcher Ignore File
+# ====================================
+# Syntax is similar to .gitignore
+# Copy this file to .qaignore to use it
+
+# Comments start with #
+
+# ============================================
+# FILE PATTERNS
+# ============================================
+
+# Ignore all test files
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Ignore directories
+node_modules/
+dist/
+build/
+coverage/
+.next/
+
+# Ignore config files
+*.config.js
+*.config.ts
+
+# Ignore specific files
+legacy-code.js
+scripts/dev-only.ts
+
+# Negate pattern (include file despite previous rules)
+# Use ! prefix to un-ignore a file
+!src/critical.test.ts
+
+# ============================================
+# PATTERN SYNTAX
+# ============================================
+#
+# *         - Match any characters except /
+# **        - Match any characters including /
+# ?         - Match single character
+# !pattern  - Negate (include despite previous rules)
+# /pattern  - Match from project root only
+# pattern/  - Match directories
+
+# ============================================
+# INLINE COMMENTS (use in source files)
+# ============================================
+#
+# Skip the next line:
+#   // qa-ignore-next-line
+#   const API_KEY = 'test-key';
+#
+# Skip this line (at end of line):
+#   const url = 'http://localhost'; // qa-ignore
+#
+# Skip a block:
+#   /* qa-ignore-start */
+#   console.log('debug');
+#   debugger;
+#   /* qa-ignore-end */
+#
+# Skip specific rule on next line:
+#   // qa-ignore: hardcoded-localhost
+#   const devUrl = 'http://localhost:3000';
+#
+# Skip multiple rules on next line:
+#   // qa-ignore: console-log, debugger-statement
+#   console.log('intentional');

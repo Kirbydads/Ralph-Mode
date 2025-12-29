@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA Metrics Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* =========================================================================
+       CSS VARIABLES - shadcn/ui inspired color system (matching index.html)
+       ========================================================================= */
+    :root {
+      /* Base colors */
+      --background: hsl(222, 47%, 6%);
+      --foreground: hsl(210, 40%, 96%);
+      --card: hsl(222, 47%, 9%);
+      --card-foreground: hsl(210, 40%, 96%);
+      --card-hover: hsl(222, 47%, 11%);
+
+      /* Muted */
+      --muted: hsl(217, 33%, 17%);
+      --muted-foreground: hsl(215, 20%, 65%);
+      --border: hsl(217, 33%, 20%);
+      --border-hover: hsl(217, 33%, 30%);
+
+      /* Accent colors */
+      --primary: hsl(217, 91%, 60%);
+      --primary-foreground: hsl(0, 0%, 100%);
+      --success: hsl(142, 71%, 45%);
+      --success-muted: hsl(142, 71%, 45%, 0.15);
+      --warning: hsl(38, 92%, 50%);
+      --warning-muted: hsl(38, 92%, 50%, 0.15);
+      --destructive: hsl(0, 84%, 60%);
+      --destructive-muted: hsl(0, 84%, 60%, 0.15);
+      --purple: hsl(270, 76%, 60%);
+      --purple-muted: hsl(270, 76%, 60%, 0.15);
+
+      /* Severity colors */
+      --critical: hsl(0, 84%, 60%);
+      --critical-bg: hsl(0, 84%, 60%, 0.15);
+      --high: hsl(25, 95%, 53%);
+      --high-bg: hsl(25, 95%, 53%, 0.15);
+      --medium: hsl(45, 93%, 47%);
+      --medium-bg: hsl(45, 93%, 47%, 0.15);
+
+      /* Spacing scale */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+
+      /* Border radius */
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 9999px;
+
+      /* Transitions */
+      --transition-fast: 150ms ease;
+      --transition-base: 200ms ease;
+    }
+
+    /* =========================================================================
+       RESET & BASE
+       ========================================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background);
+      color: var(--foreground);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* =========================================================================
+       HEADER
+       ========================================================================= */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: hsl(222, 47%, 9%, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: var(--space-4) var(--space-6);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .logo-icon {
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+
+    .logo-text {
+      font-size: 1.125rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+    }
+
+    .logo-badge {
+      background: var(--success-muted);
+      color: var(--success);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--muted-foreground);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+    }
+
+    .nav-link:hover {
+      color: var(--foreground);
+      background: var(--muted);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--primary-foreground);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--foreground);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      background: var(--muted);
+      border-color: var(--border-hover);
+    }
+
+    /* =========================================================================
+       MAIN CONTENT
+       ========================================================================= */
+    main {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: var(--space-6);
+    }
+
+    /* =========================================================================
+       OVERVIEW CARDS
+       ========================================================================= */
+    .overview-section {
+      margin-bottom: var(--space-6);
+    }
+
+    .section-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+      color: var(--foreground);
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 1200px) {
+      .overview-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .overview-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .overview-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      transition: all var(--transition-base);
+    }
+
+    .overview-card:hover {
+      border-color: var(--border-hover);
+      background: var(--card-hover);
+    }
+
+    .overview-card-label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 0.8125rem;
+      color: var(--muted-foreground);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+
+    .overview-card-value {
+      font-size: 2rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      font-family: 'JetBrains Mono', 'Inter', sans-serif;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .overview-card-value.success {
+      color: var(--success);
+    }
+
+    .overview-card-value.primary {
+      color: var(--primary);
+    }
+
+    .overview-card-subtext {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      margin-top: var(--space-1);
+    }
+
+    /* =========================================================================
+       CHARTS SECTION
+       ========================================================================= */
+    .charts-section {
+      margin-bottom: var(--space-6);
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 900px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+    }
+
+    .chart-card-title {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .chart-container {
+      position: relative;
+      height: 250px;
+    }
+
+    /* =========================================================================
+       TABLES SECTION
+       ========================================================================= */
+    .tables-section {
+      margin-bottom: var(--space-6);
+    }
+
+    .tables-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 900px) {
+      .tables-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .table-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .table-card-header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-card-title {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .table-wrapper {
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: var(--space-3) var(--space-5);
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--muted-foreground);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: var(--background);
+      position: sticky;
+      top: 0;
+    }
+
+    td {
+      font-size: 0.8125rem;
+    }
+
+    tr:hover {
+      background: var(--card-hover);
+    }
+
+    .file-path {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--primary);
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .issue-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+
+    .mode-badge {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+    }
+
+    .mode-badge.ralph {
+      background: var(--purple-muted);
+      color: var(--purple);
+    }
+
+    .mode-badge.fix {
+      background: var(--success-muted);
+      color: var(--success);
+    }
+
+    .mode-badge.watch {
+      background: var(--warning-muted);
+      color: var(--warning);
+    }
+
+    /* =========================================================================
+       FILTERS
+       ========================================================================= */
+    .filters-bar {
+      display: flex;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .filter-select {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-2) var(--space-3);
+      color: var(--foreground);
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+
+    .filter-select:hover {
+      border-color: var(--border-hover);
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    /* =========================================================================
+       EMPTY STATE
+       ========================================================================= */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8);
+      text-align: center;
+      color: var(--muted-foreground);
+      min-height: 400px;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: var(--space-4);
+      opacity: 0.5;
+    }
+
+    .empty-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--foreground);
+      margin-bottom: var(--space-2);
+    }
+
+    .empty-text {
+      font-size: 0.9375rem;
+      max-width: 400px;
+    }
+
+    /* =========================================================================
+       LOADING STATE
+       ========================================================================= */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      color: var(--muted-foreground);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--muted);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">📊</span>
+        <span class="logo-text">QA Metrics</span>
+        <span class="logo-badge">Analytics</span>
+      </div>
+
+      <div class="header-actions">
+        <a href="/" class="nav-link">Ralph Dashboard</a>
+        <button class="btn btn-outline" onclick="exportMetrics()">
+          Export JSON
+        </button>
+        <button class="btn btn-primary" onclick="loadMetrics()">
+          Refresh
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main id="main-content">
+    <div class="loading">
+      <div class="spinner"></div>
+    </div>
+  </main>
+
+  <script>
+    // =========================================================================
+    // STATE
+    // =========================================================================
+    let metricsData = null;
+    let charts = {};
+
+    // Chart.js global defaults for dark theme
+    Chart.defaults.color = 'hsl(215, 20%, 65%)';
+    Chart.defaults.borderColor = 'hsl(217, 33%, 20%)';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+
+    // =========================================================================
+    // DATA LOADING
+    // =========================================================================
+    async function loadMetrics() {
+      try {
+        const response = await fetch('/api/metrics');
+        if (!response.ok) throw new Error('Failed to load metrics');
+        metricsData = await response.json();
+        renderDashboard();
+      } catch (error) {
+        console.error('Error loading metrics:', error);
+        renderError();
+      }
+    }
+
+    function exportMetrics() {
+      if (!metricsData) return;
+      const blob = new Blob([JSON.stringify(metricsData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `qa-metrics-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // =========================================================================
+    // RENDERING
+    // =========================================================================
+    function renderDashboard() {
+      const main = document.getElementById('main-content');
+
+      if (!metricsData || metricsData.sessions.length === 0) {
+        main.innerHTML = renderEmptyState();
+        return;
+      }
+
+      main.innerHTML = `
+        ${renderOverviewCards()}
+        ${renderFiltersBar()}
+        ${renderChartsSection()}
+        ${renderTablesSection()}
+      `;
+
+      initCharts();
+    }
+
+    function renderEmptyState() {
+      return `
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <div class="empty-title">No Metrics Yet</div>
+          <div class="empty-text">
+            Run QA Watcher in watch, fix, or Ralph mode to start collecting metrics.
+            Metrics are automatically recorded after each review.
+          </div>
+        </div>
+      `;
+    }
+
+    function renderError() {
+      document.getElementById('main-content').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">❌</div>
+          <div class="empty-title">Failed to Load Metrics</div>
+          <div class="empty-text">
+            Could not load metrics data. Make sure the dashboard server is running.
+          </div>
+        </div>
+      `;
+    }
+
+    function renderOverviewCards() {
+      const agg = metricsData.aggregates;
+      const timeSavedHours = Math.round(agg.estimatedTimeSaved / 60);
+      const avgCost = agg.totalReviews > 0 ? (agg.totalCost / agg.totalReviews).toFixed(2) : '0.00';
+
+      return `
+        <section class="overview-section">
+          <h2 class="section-title">Overview</h2>
+          <div class="overview-grid">
+            <div class="overview-card">
+              <div class="overview-card-label">
+                <span>🔍</span> Total Reviews
+              </div>
+              <div class="overview-card-value primary">${agg.totalReviews}</div>
+              <div class="overview-card-subtext">QA review sessions</div>
+            </div>
+            <div class="overview-card">
+              <div class="overview-card-label">
+                <span>🐛</span> Issues Found
+              </div>
+              <div class="overview-card-value">${agg.totalIssuesFound}</div>
+              <div class="overview-card-subtext">${agg.totalIssuesFixed} fixed (${agg.totalIssuesFound > 0 ? Math.round(agg.totalIssuesFixed / agg.totalIssuesFound * 100) : 0}%)</div>
+            </div>
+            <div class="overview-card">
+              <div class="overview-card-label">
+                <span>💰</span> Total Cost
+              </div>
+              <div class="overview-card-value">$${agg.totalCost.toFixed(2)}</div>
+              <div class="overview-card-subtext">$${avgCost} avg per review</div>
+            </div>
+            <div class="overview-card">
+              <div class="overview-card-label">
+                <span>⏱️</span> Time Saved
+              </div>
+              <div class="overview-card-value success">~${timeSavedHours}h</div>
+              <div class="overview-card-subtext">Est. ${agg.estimatedTimeSaved} minutes</div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderFiltersBar() {
+      return `
+        <div class="filters-bar">
+          <select class="filter-select" id="filter-date" onchange="filterData()">
+            <option value="all">All Time</option>
+            <option value="7">Last 7 Days</option>
+            <option value="30">Last 30 Days</option>
+            <option value="90">Last 90 Days</option>
+          </select>
+          <select class="filter-select" id="filter-mode" onchange="filterData()">
+            <option value="all">All Modes</option>
+            <option value="ralph">Ralph Mode</option>
+            <option value="fix">Fix Mode</option>
+            <option value="watch">Watch Mode</option>
+          </select>
+        </div>
+      `;
+    }
+
+    function renderChartsSection() {
+      return `
+        <section class="charts-section">
+          <h2 class="section-title">Trends</h2>
+          <div class="charts-grid">
+            <div class="chart-card">
+              <div class="chart-card-title">
+                <span>📈</span> Issues Over Time
+              </div>
+              <div class="chart-container">
+                <canvas id="issues-chart"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-card-title">
+                <span>🎯</span> Issues by Severity
+              </div>
+              <div class="chart-container">
+                <canvas id="severity-chart"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-card-title">
+                <span>💵</span> Cost Over Time
+              </div>
+              <div class="chart-container">
+                <canvas id="cost-chart"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-card-title">
+                <span>📊</span> Issues by Type
+              </div>
+              <div class="chart-container">
+                <canvas id="type-chart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderTablesSection() {
+      return `
+        <section class="tables-section">
+          <h2 class="section-title">Details</h2>
+          <div class="tables-grid">
+            <div class="table-card">
+              <div class="table-card-header">
+                <div class="table-card-title">
+                  <span>📁</span> Top Problematic Files
+                </div>
+              </div>
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>File</th>
+                      <th>Issues</th>
+                    </tr>
+                  </thead>
+                  <tbody id="top-files-body">
+                    ${renderTopFilesRows()}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="table-card">
+              <div class="table-card-header">
+                <div class="table-card-title">
+                  <span>📝</span> Recent Sessions
+                </div>
+              </div>
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Mode</th>
+                      <th>Files</th>
+                      <th>Issues</th>
+                      <th>Fixed</th>
+                      <th>Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sessions-body">
+                    ${renderSessionRows()}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderTopFilesRows() {
+      const topFiles = Object.entries(metricsData.topFiles)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10);
+
+      if (topFiles.length === 0) {
+        return '<tr><td colspan="2" style="text-align: center; color: var(--muted-foreground);">No data yet</td></tr>';
+      }
+
+      return topFiles.map(([file, count]) => {
+        const shortFile = file.split(/[/\\]/).slice(-2).join('/');
+        return `
+          <tr>
+            <td><span class="file-path" title="${escapeHtml(file)}">${escapeHtml(shortFile)}</span></td>
+            <td><span class="issue-count">${count}</span></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderSessionRows() {
+      const sessions = metricsData.sessions.slice(-20).reverse();
+
+      if (sessions.length === 0) {
+        return '<tr><td colspan="6" style="text-align: center; color: var(--muted-foreground);">No sessions yet</td></tr>';
+      }
+
+      return sessions.map(s => {
+        const date = new Date(s.timestamp);
+        const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        const totalIssues = (s.issuesFound.critical || 0) + (s.issuesFound.high || 0) + (s.issuesFound.medium || 0);
+
+        return `
+          <tr>
+            <td>${dateStr} ${timeStr}</td>
+            <td><span class="mode-badge ${s.mode}">${s.mode}</span></td>
+            <td>${s.filesReviewed}</td>
+            <td>${totalIssues}</td>
+            <td>${s.issuesFixed}</td>
+            <td>$${(s.cost || 0).toFixed(2)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // CHARTS
+    // =========================================================================
+    function initCharts() {
+      // Destroy existing charts
+      Object.values(charts).forEach(chart => chart.destroy());
+      charts = {};
+
+      const sessions = metricsData.sessions;
+      if (sessions.length === 0) return;
+
+      // Prepare data
+      const last30 = sessions.slice(-30);
+      const labels = last30.map(s => {
+        const d = new Date(s.timestamp);
+        return `${d.getMonth() + 1}/${d.getDate()}`;
+      });
+
+      // Issues over time
+      const issuesCtx = document.getElementById('issues-chart');
+      if (issuesCtx) {
+        charts.issues = new Chart(issuesCtx, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Issues Found',
+              data: last30.map(s => (s.issuesFound.critical || 0) + (s.issuesFound.high || 0) + (s.issuesFound.medium || 0)),
+              borderColor: 'hsl(0, 84%, 60%)',
+              backgroundColor: 'hsla(0, 84%, 60%, 0.1)',
+              fill: true,
+              tension: 0.4
+            }, {
+              label: 'Issues Fixed',
+              data: last30.map(s => s.issuesFixed),
+              borderColor: 'hsl(142, 71%, 45%)',
+              backgroundColor: 'hsla(142, 71%, 45%, 0.1)',
+              fill: true,
+              tension: 0.4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom'
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: 'hsl(217, 33%, 15%)'
+                }
+              },
+              x: {
+                grid: {
+                  display: false
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // Severity breakdown
+      const severityCtx = document.getElementById('severity-chart');
+      if (severityCtx) {
+        const severityTotals = sessions.reduce((acc, s) => {
+          acc.critical += s.issuesFound.critical || 0;
+          acc.high += s.issuesFound.high || 0;
+          acc.medium += s.issuesFound.medium || 0;
+          return acc;
+        }, { critical: 0, high: 0, medium: 0 });
+
+        charts.severity = new Chart(severityCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Critical', 'High', 'Medium'],
+            datasets: [{
+              data: [severityTotals.critical, severityTotals.high, severityTotals.medium],
+              backgroundColor: [
+                'hsl(0, 84%, 60%)',
+                'hsl(25, 95%, 53%)',
+                'hsl(45, 93%, 47%)'
+              ],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom'
+              }
+            }
+          }
+        });
+      }
+
+      // Cost over time
+      const costCtx = document.getElementById('cost-chart');
+      if (costCtx) {
+        let cumulative = 0;
+        const cumulativeCosts = last30.map(s => {
+          cumulative += s.cost || 0;
+          return cumulative;
+        });
+
+        charts.cost = new Chart(costCtx, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Cumulative Cost ($)',
+              data: cumulativeCosts,
+              borderColor: 'hsl(217, 91%, 60%)',
+              backgroundColor: 'hsla(217, 91%, 60%, 0.1)',
+              fill: true,
+              tension: 0.4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom'
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: 'hsl(217, 33%, 15%)'
+                }
+              },
+              x: {
+                grid: {
+                  display: false
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // Issues by type
+      const typeCtx = document.getElementById('type-chart');
+      if (typeCtx) {
+        const typeData = Object.entries(metricsData.issueTypeBreakdown)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 8);
+
+        charts.type = new Chart(typeCtx, {
+          type: 'bar',
+          data: {
+            labels: typeData.map(([type]) => type),
+            datasets: [{
+              label: 'Count',
+              data: typeData.map(([, count]) => count),
+              backgroundColor: 'hsl(270, 76%, 60%)',
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+              legend: {
+                display: false
+              }
+            },
+            scales: {
+              x: {
+                beginAtZero: true,
+                grid: {
+                  color: 'hsl(217, 33%, 15%)'
+                }
+              },
+              y: {
+                grid: {
+                  display: false
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    function filterData() {
+      const dateFilter = document.getElementById('filter-date').value;
+      const modeFilter = document.getElementById('filter-mode').value;
+
+      // This is a simple implementation - in production you'd filter the data
+      // and re-render charts/tables with filtered data
+      console.log('Filtering by:', { dateFilter, modeFilter });
+
+      // For now, just re-initialize charts
+      initCharts();
+    }
+
+    // =========================================================================
+    // HELPERS
+    // =========================================================================
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // =========================================================================
+    // INIT
+    // =========================================================================
+    loadMetrics();
+  </script>
+</body>
+</html>

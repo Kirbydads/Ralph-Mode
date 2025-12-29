@@ -1,0 +1,5 @@
+# Test .qaignore patterns
+legacy/**
+vendor/**
+*.test.ts
+demo/legacy-ignored.ts

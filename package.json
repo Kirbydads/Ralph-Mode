@@ -1,0 +1,39 @@
+{
+  "name": "production-qa-watcher",
+  "version": "1.0.0",
+  "description": "Automated production readiness code review using Claude Code",
+  "main": "production-qa-watcher.js",
+  "scripts": {
+    "qa-watch": "node production-qa-watcher.js",
+    "qa-watch:verbose": "node production-qa-watcher.js --verbose",
+    "qa-watch:fix": "node production-qa-watcher.js --fix --verbose",
+    "qa-watch:dry-run": "node production-qa-watcher.js --verbose",
+    "qa-ralph": "node production-qa-watcher.js --ralph --fix --verbose",
+    "qa-ralph:dry": "node production-qa-watcher.js --ralph --verbose",
+    "qa-metrics": "node metrics-server.js",
+    "qa-setup-hooks": "node setup-hooks.js",
+    "qa-scan-staged": "node production-qa-watcher.js --scan-staged",
+    "qa-rules:list": "node production-qa-watcher.js --list-rules",
+    "qa-rules:validate": "node production-qa-watcher.js --validate-rules"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.0"
+  },
+  "optionalDependencies": {
+    "node-notifier": "^10.0.1",
+    "express": "^4.18.0",
+    "ws": "^8.16.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "qa",
+    "code-review",
+    "production",
+    "claude",
+    "watcher"
+  ],
+  "author": "",
+  "license": "MIT"
+}

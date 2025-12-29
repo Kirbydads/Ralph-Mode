@@ -1,0 +1,56 @@
+{
+  "_comment": "Production QA Watcher Configuration. See .qawatch.json.example for detailed documentation.",
+  "watchPaths": [
+    "./test-cases",
+    "./demo"
+  ],
+  "ignored": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/.next/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/qa-reviews/**",
+    "**/*.log"
+  ],
+  "extensions": [
+    ".ts",
+    ".tsx",
+    ".js",
+    ".jsx",
+    ".mjs"
+  ],
+  "autoFix": {
+    "backupFiles": true,
+    "verifyAfterFix": true,
+    "safePatterns": [
+      "hardcoded-localhost",
+      "console-log",
+      "debugger-statement"
+    ]
+  },
+  "ralph": {
+    "maxCycles": 5,
+    "budgetWarning": 5,
+    "budgetHard": 20,
+    "scope": "**/messy-code.tsx"
+  },
+  "notifications": {
+    "enabled": true,
+    "criticalOnly": false,
+    "sound": true
+  },
+  "dashboard": {
+    "port": 3000,
+    "autoOpen": true
+  },
+  "techStack": {
+    "framework": "",
+    "database": "",
+    "auth": "",
+    "hosting": "",
+    "orm": "",
+    "ui": "",
+    "testing": ""
+  }
+}

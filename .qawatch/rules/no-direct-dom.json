@@ -1,0 +1,12 @@
+{
+  "name": "no-direct-dom-manipulation",
+  "enabled": true,
+  "pattern": "/document\\.(querySelector|getElementById|getElementsBy)/",
+  "severity": "medium",
+  "type": "quality",
+  "message": "Direct DOM manipulation detected - use React refs or state instead",
+  "fix": "Use useRef hook for DOM access in React components",
+  "autoFixable": false,
+  "files": ["*.tsx", "*.jsx"],
+  "ignoreFiles": ["*.test.*", "*.spec.*", "setupTests.*"]
+}

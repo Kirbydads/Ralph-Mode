@@ -1,0 +1,13 @@
+{
+  "_comment": "Example custom rule. Copy and modify for your own patterns. Set enabled:true to activate.",
+  "name": "example-todo-comment",
+  "enabled": false,
+  "pattern": "// TODO:",
+  "severity": "low",
+  "type": "quality",
+  "message": "TODO comment found - consider creating a GitHub issue",
+  "fix": "Create a GitHub issue to track this TODO",
+  "autoFixable": false,
+  "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+  "ignoreFiles": ["*.test.*", "*.spec.*"]
+}
