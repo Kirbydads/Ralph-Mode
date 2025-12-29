@@ -1,14 +1,13 @@
-# 🤖 Production QA Watcher
+# 🤖 Production QA Watcher (Ralph Mode)
 
 > Autonomous AI-powered code quality tool that finds and fixes production issues while you sleep
 
-[![Version](https://img.shields.io/badge/version-2.3.0-blue.svg)]()
-[![License](https://img.shields.io/badge/license-MIT-green.svg)]()
-[![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)]()
+[![Version](https://img.shields.io/badge/version-2.8.0-blue.svg)](https://github.com/JamesMo14/Ralph-Mode/releases)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/JamesMo14/Ralph-Mode/blob/main/LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![GitHub Stars](https://img.shields.io/github/stars/JamesMo14/Ralph-Mode?style=social)](https://github.com/JamesMo14/Ralph-Mode)
 
-<!-- TODO: Add screenshot -->
-<!-- ![Dashboard Screenshot](docs/dashboard-screenshot.png) -->
-<!-- *Real-time dashboard showing Ralph Mode in action* -->
+**[Star this repo](https://github.com/JamesMo14/Ralph-Mode)** if you find it useful!
 
 ---
 
@@ -53,8 +52,9 @@ npm run qa-ralph
 ### Setup
 
 ```bash
-# 1. Clone or copy to your project
-cd your-project
+# 1. Clone the repository
+git clone https://github.com/JamesMo14/Ralph-Mode.git
+cd Ralph-Mode
 
 # 2. Install dependencies
 npm install
